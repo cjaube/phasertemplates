@@ -1,13 +1,11 @@
 export default class Ball extends Phaser.GameObjects.GameObject
 {
     image: Phaser.Physics.Arcade.Image;
-    paddle: Phaser.Physics.Arcade.Image;
     onPaddle: Boolean;
     
-    constructor(scene: Phaser.Scene, paddle: Phaser.Physics.Arcade.Image)
+    constructor(scene: Phaser.Scene)
     {
         super(scene, "ball");
-        this.paddle = paddle;
 
         this.create();
     }
@@ -28,10 +26,10 @@ export default class Ball extends Phaser.GameObjects.GameObject
         }, this);
     }
 
-    reset()
+    reset(paddleImage: Phaser.Physics.Arcade.Image)
     {
         this.image.setVelocity(0);
-        this.image.setPosition(this.paddle.x, 500);
+        this.image.setPosition(paddleImage.x, 500);
         this.onPaddle = true;
     }
 
@@ -59,15 +57,19 @@ export default class Ball extends Phaser.GameObjects.GameObject
         }
     }
 
-    update()
+    paddleMoved(paddleImage: Phaser.Physics.Arcade.Image)
     {
         if (this.onPaddle)
         {
-            this.image.x = this.paddle.x;
+            this.image.x = paddleImage.x;
         }
+    }
+
+    update()
+    {
         if (this.image.y > 600)
         {
-            this.reset();
+            this.emit("outOfBounds");
         }
     }
 
